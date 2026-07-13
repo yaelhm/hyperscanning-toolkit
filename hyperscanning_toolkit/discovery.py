@@ -1,0 +1,81 @@
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, List
+
+from .config import DiscoveryConfig
+
+CLEANED_SEP = "__"
+CLEANED_SUFFIX = f"{CLEANED_SEP}cleaned.csv"
+
+
+@dataclass
+class ParticipantFile:
+    path: Path
+    subject_id: str
+
+
+@dataclass
+class SessionRecord:
+    levels: Dict[str, str]
+    session_dir: Path
+    files: List[ParticipantFile]
+
+    @property
+    def label(self) -> str:
+        return "/".join(self.levels.values())
+
+
+def discover_sessions(cfg: DiscoveryConfig) -> List[SessionRecord]:
+    """Find session directories under cfg.root and the participant files in each.
+
+    A session directory's path relative to `root` is split into parts and
+    labelled left-to-right using `cfg.level_names` (e.g. condition/dyad/session).
+    """
+    root = Path(cfg.root)
+    if not root.exists():
+        return []
+
+    subject_regex = re.compile(cfg.filename_subject_regex)
+    records: List[SessionRecord] = []
+
+    for session_dir in sorted(root.glob(cfg.session_glob)):
+        if not session_dir.is_dir():
+            continue
+
+        rel_parts = session_dir.relative_to(root).parts
+        levels = dict(zip(cfg.level_names, rel_parts))
+
+        files: List[ParticipantFile] = []
+        for f in sorted(session_dir.glob(cfg.file_glob)):
+            m = subject_regex.search(f.stem)
+            if not m:
+                continue
+            files.append(ParticipantFile(path=f, subject_id=m.group(1)))
+
+        if files:
+            records.append(SessionRecord(levels=levels, session_dir=session_dir, files=files))
+
+    return records
+
+
+def cleaned_filename(levels: Dict[str, str], subject_id: str) -> str:
+    parts = list(levels.values()) + [f"subject_{subject_id}"]
+    return CLEANED_SEP.join(parts) + CLEANED_SUFFIX
+
+
+def parse_cleaned_filename(filename: str, level_names: List[str]):
+    """Inverse of cleaned_filename. Returns (levels, subject_id) or None if it doesn't match."""
+    if not filename.endswith(CLEANED_SUFFIX):
+        return None
+    stem = filename[: -len(CLEANED_SUFFIX)]
+    parts = stem.split(CLEANED_SEP)
+    if len(parts) != len(level_names) + 1:
+        return None
+    *level_values, subject_part = parts
+    m = re.match(r"subject_(.+)", subject_part)
+    if not m:
+        return None
+    return dict(zip(level_names, level_values)), m.group(1)

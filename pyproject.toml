@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hyperscanning-toolkit"
+version = "0.1.0"
+description = "Config-driven inter-brain / intra-brain connectivity graph pipeline for hyperscanning timeseries data (fNIRS, EEG, ECG, GSR, ...)."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pandas>=1.5",
+    "numpy>=1.23",
+    "scipy>=1.9",
+    "networkx>=3.0",
+    "matplotlib>=3.6",
+    "openpyxl>=3.1",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+hyperscanning-toolkit = "hyperscanning_toolkit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["hyperscanning_toolkit*"]

@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets / credentials
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+
+# Raw/processed data and generated outputs are not tracked
+data/
+data_test/
+outputs/
+
+# Temporary files
+*.tmp
+*.log
+*~
+
+# Word autosave/lock files
+~$*.docx

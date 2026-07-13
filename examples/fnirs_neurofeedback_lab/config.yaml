@@ -1,0 +1,34 @@
+# Worked example: this lab's fNIRS neurofeedback hyperscanning dataset.
+#
+# Raw exports (`new_data_/NFB O2HB Data/*.xlsx`, `new_data_/Control O2HB Data/*.xlsx`)
+# are first reshaped by reorganize_dataset.py into:
+#   data/<NFB|Control>/dyad_XXXX/session_XX/subject_01.xlsx
+#   data/<NFB|Control>/dyad_XXXX/session_XX/subject_02.xlsx
+# Then this config points the generic toolkit at that reshaped tree.
+
+channels:
+  mode: regex
+  # fNIRS optode channel columns Tx0_Rx0 .. Tx15_Rx15 (16x16 grid).
+  pattern: "^Tx([0-9]|1[0-5])_Rx([0-9]|1[0-5])$"
+
+epoching:
+  mode: event_marker
+  start_column: StartEvent
+  end_column: EndEvent
+  # Neurofeedback epoch N is only valid where StartEvent="NFB<N>" pairs with
+  # EndEvent="NFB<N>_End" on the same row.
+  start_pattern: "^NFB(\\d+)$"
+  end_pattern: "^NFB(\\d+)_End$"
+
+discovery:
+  root: ../../data
+  session_glob: "*/dyad_*/session_*"
+  level_names: ["condition", "dyad", "session"]
+  file_glob: "subject_*.xlsx"
+  filename_subject_regex: "subject_(\\d+)"
+
+thresholds:
+  p_threshold: 0.05
+  r_threshold: 0.0
+
+output_dir: ../../outputs
