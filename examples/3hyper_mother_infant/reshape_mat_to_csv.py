@@ -61,7 +61,7 @@ CONDITIONS = ("E", "F", "I")
 N_CHANNELS = 18
 
 DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / ".." / ".." / "data"
-DEFAULT_REPORT_PATH = Path(__file__).resolve().parent / ".." / ".." / "outputs" / "3hyper_reshape_report.md"
+DEFAULT_REPORT_PATH = Path(__file__).resolve().parent / ".." / ".." / "outputs" / "3hyper_mother_infant" / "3hyper_reshape_report.md"
 
 
 def load_mat_variables(path: Path) -> dict:

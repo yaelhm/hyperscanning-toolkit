@@ -44,9 +44,10 @@ data/
         └── subject_mom.csv
 ```
 
-and prints + saves a validation report (default `../../outputs/3hyper_reshape_report.md`)
-listing discovered dyads, matched mother-baby pairs, missing participants,
-missing conditions, missing chromophores, and every file written.
+and prints + saves a validation report (default
+`../../outputs/3hyper_mother_infant/3hyper_reshape_report.md`) listing
+discovered dyads, matched mother-baby pairs, missing participants, missing
+conditions, missing chromophores, and every file written.
 
 Expect a handful of genuine gaps reflecting real data-collection issues
 (not adapter bugs) — e.g. dyads with a session that was never fully

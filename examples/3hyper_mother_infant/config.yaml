@@ -24,4 +24,4 @@ thresholds:
   p_threshold: 0.05
   r_threshold: 0.0   # positive, significant connections only
 
-output_dir: ../../outputs
+output_dir: ../../outputs/3hyper_mother_infant
