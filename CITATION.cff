@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "Hyperscanning Toolkit"
+version: "1.0.0"
+type: software
+authors:
+  - family-names: "Moshe"
+    given-names: "Yael Hodaya"
+repository-code: "https://github.com/YaelMoshe/hyperscanning-toolkit"

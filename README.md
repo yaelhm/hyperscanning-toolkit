@@ -1,5 +1,7 @@
 # Hyperscanning Toolkit
 
+**Version 1.0.0**
+
 A config-driven pipeline for building inter-brain (dyadic) and intra-brain
 functional connectivity graphs from hyperscanning timeseries data. The core
 package makes no assumptions about signal modality (fNIRS, EEG, ECG, GSR, ...),
@@ -16,14 +18,39 @@ the config that reproduces it.
 pip install -e .
 ```
 
-## Usage
+## Basic usage example
+
+```python
+from hyperscanning_toolkit.config import ToolkitConfig
+from hyperscanning_toolkit.pipeline import run_all
+
+cfg = ToolkitConfig.from_yaml("config.yaml")
+result = run_all(cfg)          # runs inspect -> extract -> graphs
+
+print(result["summary"].render())   # human-readable run summary
+result["intra"]                      # DataFrame of intra-brain graph metrics
+result["inter"]                      # DataFrame of inter-brain graph metrics
+```
+
+## CLI usage
 
 ```bash
 python -m hyperscanning_toolkit --config config.yaml run     # inspect -> extract -> graphs
 python -m hyperscanning_toolkit --config config.yaml inspect  # just scan channels/rows per file
 python -m hyperscanning_toolkit --config config.yaml extract  # just apply epoching, write cleaned CSVs
 python -m hyperscanning_toolkit --config config.yaml graphs   # just build graphs from cleaned CSVs
+python -m hyperscanning_toolkit --version                     # print the installed toolkit version
 ```
+
+Every run prints its version banner first and ends with a run summary
+(sessions discovered/processed/skipped, participant files, graphs built,
+failed correlations, all-NaN files, constant channels, duplicate subjects
+skipped, total runtime). Every individual graph's output folder also gets a
+`run_metadata.json` — toolkit version, git commit, timestamp, the exact
+command and config file used, the connectivity method and thresholds, the
+channels tested, and the Python/numpy/scipy/networkx/pandas versions — so any
+single graph's folder is self-describing for reproducibility even in
+isolation.
 
 Pointing the toolkit at a new dataset means writing a new `config.yaml` —
 no source changes. See `hyperscanning_toolkit/config.py` for the full schema;
@@ -58,6 +85,21 @@ thresholds:
 output_dir: outputs
 ```
 
+## Input and output overview
+
+**Input:** one CSV/XLSX file per participant per session, containing a time
+column-free table of numeric signal channels (plus, optionally, epoch/event
+marker columns) — see the `config.yaml` schema above for how a dataset's
+folder layout, channel columns, and epoching scheme are described without
+touching any code.
+
+**Output**, written under `output_dir`:
+- `channel_inspection/valid_channels_all_sessions.csv` — one row per file scanned.
+- `cleaned_epochs/*.csv` — one epoched CSV per participant/session, plus `epoch_summary.csv`.
+- `graphs/{inter,intra}/.../` — per-graph `adjacency_matrix.csv`, `edge_table.csv`,
+  `all_tested_edges.csv`, `graph_metrics.csv`, `node_metrics.csv`, `graph.png`,
+  and `run_metadata.json`, plus dataset-wide `graphs/{inter,intra}_graph_summary.csv`.
+
 ## Pipeline stages
 
 1. **inspect** — scans `discovery.root` for session folders/participant files
@@ -78,14 +120,18 @@ output_dir: outputs
 
 ```
 hyperscanning_toolkit/
-├── config.py         # YAML config schema
-├── discovery.py       # generic file discovery + cleaned-filename encoding
-├── channels.py        # channel/column selection
-├── epoching.py         # epoch-extraction strategies
-├── connectivity.py     # Pearson correlation + significance thresholding
-├── graphs.py            # graph construction, metrics, visualization
-├── pipeline.py           # orchestration (inspect / extract / graphs / run)
-└── cli.py                # `python -m hyperscanning_toolkit`
+├── _version.py        # single source of truth for the version string
+├── config.py           # YAML config schema
+├── discovery.py         # generic file discovery + cleaned-filename encoding + duplicate-subject detection
+├── channels.py          # channel/column selection
+├── epoching.py           # epoch-extraction strategies
+├── connectivity.py       # Pearson correlation + significance thresholding
+├── graphs.py              # graph construction, metrics, visualization
+├── diagnostics.py         # constant-channel / all-NaN-file detection (reporting only, no math change)
+├── run_summary.py         # aggregate run counters + human-readable summary
+├── metadata.py             # run_metadata.json generation (versions, environment, config, timestamps)
+├── pipeline.py             # orchestration (inspect / extract / graphs / run)
+└── cli.py                  # `python -m hyperscanning_toolkit`
 ```
 
 ## Tests
@@ -107,3 +153,41 @@ and visualization, CLI.
 Planned: pluggable connectivity metrics beyond Pearson correlation (coherence,
 wavelet transform coherence, mutual information); N-participant hyperbrain
 graphs (currently pairwise-only); statistical group comparisons.
+
+## Citation
+
+If you use this software, please cite it using the metadata in
+[`CITATION.cff`](CITATION.cff) (GitHub renders a "Cite this repository"
+button from this file automatically). At minimum:
+
+```
+Moshe, Y. H. (2026). Hyperscanning Toolkit (Version 1.0.0) [Computer software].
+https://github.com/YaelMoshe/hyperscanning-toolkit
+```
+
+## Development and attribution
+
+### Lead Developer
+
+**Dr. Yael Hodaya Moshe**
+
+Responsible for the software architecture, pipeline design, Python
+implementation, testing, documentation, releases, and maintenance of the
+toolkit.
+
+### Scientific Supervision
+
+- Dr. Hila Gvirts
+- Dr. Anat Dahan
+
+Developed in collaboration with the Social Neuroscience Lab as part of an
+academic research collaboration.
+
+See [`AUTHORS.md`](AUTHORS.md) for the full contributor list.
+
+## License
+
+A license has not yet been finalized for this repository. All rights are
+reserved by the copyright holder until a license is chosen and added here.
+Do not treat the absence of a license as permission to use, copy, modify, or
+redistribute this code.

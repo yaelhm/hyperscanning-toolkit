@@ -1,0 +1,27 @@
+# 3HYPER mother-infant fNIRS hyperscanning — HbO primary analysis
+#
+# Run reshape_mat_to_csv.py first to produce the data/ tree this config
+# points at (see README.md in this folder).
+
+channels:
+  mode: regex
+  # HbO channels only for the primary analysis (per the study's stated intent).
+  # Swap to "^HbR_CH\\d+$" to re-run the same reshaped CSVs against HbR instead.
+  pattern: "^HbO_CH\\d+$"
+
+epoching:
+  mode: none
+  # The .mat arrays are already condition-segmented; no marker-based cutting needed.
+
+discovery:
+  root: ../../data
+  session_glob: "dyad_*/condition_*"
+  level_names: ["dyad", "condition"]
+  file_glob: "subject_*.csv"
+  filename_subject_regex: "subject_(\\w+)"   # captures "baby" / "mom"
+
+thresholds:
+  p_threshold: 0.05
+  r_threshold: 0.0   # positive, significant connections only
+
+output_dir: ../../outputs

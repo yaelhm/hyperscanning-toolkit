@@ -1,7 +1,24 @@
+"""
+Hyperscanning Toolkit
+
+Copyright (c) 2026 Dr. Yael Hodaya Moshe.
+
+Lead Developer:
+    Dr. Yael Hodaya Moshe
+
+Developed in collaboration with the Social Neuroscience Lab.
+
+Scientific Supervision:
+    Dr. Hila Gvirts
+    Dr. Anat Dahan
+
+This file is part of the Hyperscanning Toolkit.
+"""
+
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List
 
@@ -18,10 +35,19 @@ class ParticipantFile:
 
 
 @dataclass
+class DuplicateSubjectFile:
+    """A file that was skipped because its subject_id already matched another file in the same session."""
+    path: Path
+    subject_id: str
+    kept_path: Path
+
+
+@dataclass
 class SessionRecord:
     levels: Dict[str, str]
     session_dir: Path
     files: List[ParticipantFile]
+    duplicate_files: List[DuplicateSubjectFile] = field(default_factory=list)
 
     @property
     def label(self) -> str:
@@ -33,6 +59,12 @@ def discover_sessions(cfg: DiscoveryConfig) -> List[SessionRecord]:
 
     A session directory's path relative to `root` is split into parts and
     labelled left-to-right using `cfg.level_names` (e.g. condition/dyad/session).
+
+    If two or more files in the same session resolve to the same subject_id
+    (an ambiguous `filename_subject_regex` for that dataset), the first file
+    found (sorted order) is kept and every later colliding file is skipped
+    with a printed warning and recorded in `SessionRecord.duplicate_files`,
+    rather than silently overwriting each other downstream.
     """
     root = Path(cfg.root)
     if not root.exists():
@@ -49,14 +81,26 @@ def discover_sessions(cfg: DiscoveryConfig) -> List[SessionRecord]:
         levels = dict(zip(cfg.level_names, rel_parts))
 
         files: List[ParticipantFile] = []
+        duplicates: List[DuplicateSubjectFile] = []
+        seen: Dict[str, Path] = {}
         for f in sorted(session_dir.glob(cfg.file_glob)):
             m = subject_regex.search(f.stem)
             if not m:
                 continue
-            files.append(ParticipantFile(path=f, subject_id=m.group(1)))
+            subject_id = m.group(1)
+            if subject_id in seen:
+                print(
+                    f"  WARNING: duplicate subject_id {subject_id!r} in "
+                    f"{'/'.join(levels.values())}: keeping {seen[subject_id].name}, "
+                    f"skipping {f.name}"
+                )
+                duplicates.append(DuplicateSubjectFile(path=f, subject_id=subject_id, kept_path=seen[subject_id]))
+                continue
+            files.append(ParticipantFile(path=f, subject_id=subject_id))
+            seen[subject_id] = f
 
-        if files:
-            records.append(SessionRecord(levels=levels, session_dir=session_dir, files=files))
+        if files or duplicates:
+            records.append(SessionRecord(levels=levels, session_dir=session_dir, files=files, duplicate_files=duplicates))
 
     return records
 

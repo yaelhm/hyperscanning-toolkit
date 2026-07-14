@@ -4,10 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hyperscanning-toolkit"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Config-driven inter-brain / intra-brain connectivity graph pipeline for hyperscanning timeseries data (fNIRS, EEG, ECG, GSR, ...)."
 readme = "README.md"
 requires-python = ">=3.9"
+authors = [
+    { name = "Dr. Yael Hodaya Moshe" }
+]
 dependencies = [
     "pandas>=1.5",
     "numpy>=1.23",
@@ -26,3 +29,6 @@ hyperscanning-toolkit = "hyperscanning_toolkit.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["hyperscanning_toolkit*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "hyperscanning_toolkit._version.__version__"}

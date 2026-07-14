@@ -8,6 +8,8 @@ dist/
 .mypy_cache/
 .ruff_cache/
 .ipynb_checkpoints/
+.coverage
+htmlcov/
 
 # Virtual environments
 .venv/
@@ -36,7 +38,10 @@ credentials.json
 # Raw/processed data and generated outputs are not tracked
 data/
 data_test/
+datasets/
 outputs/
+results/
+logs/
 
 # Temporary files
 *.tmp

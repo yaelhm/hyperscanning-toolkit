@@ -1,3 +1,20 @@
+"""
+Hyperscanning Toolkit
+
+Copyright (c) 2026 Dr. Yael Hodaya Moshe.
+
+Lead Developer:
+    Dr. Yael Hodaya Moshe
+
+Developed in collaboration with the Social Neuroscience Lab.
+
+Scientific Supervision:
+    Dr. Hila Gvirts
+    Dr. Anat Dahan
+
+This file is part of the Hyperscanning Toolkit.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -77,6 +94,8 @@ class ToolkitConfig:
     discovery: DiscoveryConfig = field(default_factory=DiscoveryConfig)
     thresholds: ThresholdConfig = field(default_factory=ThresholdConfig)
     output_dir: str = "outputs"
+    config_path: Optional[str] = None
+    """Path this config was loaded from, if any (set by from_yaml). None if built via from_dict."""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ToolkitConfig":
@@ -104,6 +123,7 @@ class ToolkitConfig:
         base_dir = path.resolve().parent
         cfg.discovery.root = str(_resolve_relative(cfg.discovery.root, base_dir))
         cfg.output_dir = str(_resolve_relative(cfg.output_dir, base_dir))
+        cfg.config_path = str(path.resolve())
         return cfg
 
 

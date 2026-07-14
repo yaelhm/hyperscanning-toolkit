@@ -1,15 +1,34 @@
 """
+Hyperscanning Toolkit
+
+Copyright (c) 2026 Dr. Yael Hodaya Moshe.
+
+Lead Developer:
+    Dr. Yael Hodaya Moshe
+
+Developed in collaboration with the Social Neuroscience Lab.
+
+Scientific Supervision:
+    Dr. Hila Gvirts
+    Dr. Anat Dahan
+
+This file is part of the Hyperscanning Toolkit.
+
+---
+
 End-to-end test proving the toolkit is data-agnostic: it uses made-up
 column names, a made-up epoch-marker scheme, and a made-up folder layout
 that have nothing to do with the fNIRS/NFB lab example.
 """
 
+import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
 
+from hyperscanning_toolkit import __version__
 from hyperscanning_toolkit.config import ToolkitConfig
 from hyperscanning_toolkit.pipeline import run_all
 
@@ -111,11 +130,24 @@ def test_pipeline_is_data_agnostic(dataset_root: Path, cfg: ToolkitConfig):
     for subject_dir in subject_dirs:
         adj = pd.read_csv(subject_dir / "adjacency_matrix.csv", index_col=0)
         assert adj.shape == (3, 3)
-        for fname in ("all_tested_edges.csv", "edge_table.csv", "graph_metrics.csv", "node_metrics.csv"):
+        for fname in ("all_tested_edges.csv", "edge_table.csv", "graph_metrics.csv", "node_metrics.csv", "run_metadata.json"):
             assert (subject_dir / fname).exists()
+        metadata = json.loads((subject_dir / "run_metadata.json").read_text())
+        assert metadata["toolkit_version"] == __version__
+        assert metadata["graph_type"] == "intra"
+        assert metadata["connectivity_method"] == "pearson_correlation"
 
     inter_dir = out / "graphs" / "inter" / "GroupA" / "pair_0001" / "rec_01"
     pair_dirs = list(inter_dir.iterdir())
     assert len(pair_dirs) == 1
     adj = pd.read_csv(pair_dirs[0] / "adjacency_matrix.csv", index_col=0)
     assert adj.shape == (6, 6)  # 3 channels x 2 participants
+    inter_metadata = json.loads((pair_dirs[0] / "run_metadata.json").read_text())
+    assert inter_metadata["graph_type"] == "inter"
+    assert inter_metadata["participant_count"] == 2
+
+    # Run summary carries the version and sane aggregate counts.
+    run_summary = result["summary"]
+    assert run_summary.toolkit_version == __version__
+    assert run_summary.n_intra_graphs == 2
+    assert run_summary.n_inter_graphs == 1

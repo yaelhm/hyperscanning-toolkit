@@ -13,12 +13,14 @@ Scientific Supervision:
     Dr. Anat Dahan
 
 This file is part of the Hyperscanning Toolkit.
+
+---
+
+Single source of truth for the toolkit's version.
+
+Bump this one string for every release; pyproject.toml reads it dynamically
+(see [tool.setuptools.dynamic] in pyproject.toml) so it never needs to be
+updated in two places.
 """
 
-from ._version import __version__
-from .config import ToolkitConfig
-
-__author__ = "Dr. Yael Hodaya Moshe"
-__copyright__ = "Copyright (c) 2026 Dr. Yael Hodaya Moshe"
-
-__all__ = ["ToolkitConfig", "__version__", "__author__", "__copyright__"]
+__version__ = "1.0.0"
