@@ -8,9 +8,9 @@ package makes no assumptions about signal modality (fNIRS, EEG, ECG, GSR, ...),
 epoch/marker scheme, or folder layout — every dataset-specific detail lives in
 one YAML config file.
 
-See [`examples/fnirs_neurofeedback_lab/`](examples/fnirs_neurofeedback_lab/)
-for a full worked example (this lab's fNIRS neurofeedback study) including
-the config that reproduces it.
+See [`examples/3hyper_mother_infant/`](examples/3hyper_mother_infant/) for a
+full worked example (a mother-infant fNIRS hyperscanning dataset) including
+the adapter script and config that reproduce it.
 
 ## Install
 

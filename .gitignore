@@ -54,3 +54,6 @@ logs/
 # Local-only manuscript/draft folder — never publish its contents
 Article/*
 !Article/.gitkeep
+
+# Project-specific example kept locally only, not published
+examples/fnirs_neurofeedback_lab/
