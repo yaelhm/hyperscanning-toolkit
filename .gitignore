@@ -50,3 +50,7 @@ logs/
 
 # Word autosave/lock files
 ~$*.docx
+
+# Local-only manuscript/draft folder — never publish its contents
+Article/*
+!Article/.gitkeep
