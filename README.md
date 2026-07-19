@@ -187,7 +187,6 @@ See [`AUTHORS.md`](AUTHORS.md) for the full contributor list.
 
 ## License
 
-A license has not yet been finalized for this repository. All rights are
-reserved by the copyright holder until a license is chosen and added here.
-Do not treat the absence of a license as permission to use, copy, modify, or
-redistribute this code.
+
+This project is released under the MIT License.
+See the LICENSE file for details.
