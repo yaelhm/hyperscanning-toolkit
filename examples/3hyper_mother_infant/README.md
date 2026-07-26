@@ -70,10 +70,9 @@ against HbR instead of HbO — no need to re-run the adapter.
 
 ## Known gap versus the full study design
 
-The example input scenario for this dataset asks for three network levels:
-each participant's intra-brain network, the mother-infant inter-brain
-network, and a combined 36-node "hyper-brain" network, plus metrics
-summarized over 10 ROIs. The toolkit as it stands today builds the first
+The example input scenario for this dataset asks for two network levels:
+each participant's intra-brain network and the mother-infant inter-brain
+network. The toolkit as it stands today builds the first
 two (intra-brain per participant, inter-brain per pair) but has no step that
 merges them into a third combined hyper-brain graph, and no ROI-aggregation
 step — node metrics are per-channel only. Both would be additive follow-up
