@@ -68,12 +68,3 @@ python -m hyperscanning_toolkit --config config.yaml run
 Swap the channel `pattern` to `^HbR_CH\d+$` to re-run the same reshaped CSVs
 against HbR instead of HbO — no need to re-run the adapter.
 
-## Known gap versus the full study design
-
-The example input scenario for this dataset asks for two network levels:
-each participant's intra-brain network and the mother-infant inter-brain
-network. The toolkit as it stands today builds the first
-two (intra-brain per participant, inter-brain per pair) but has no step that
-merges them into a third combined hyper-brain graph, and no ROI-aggregation
-step — node metrics are per-channel only. Both would be additive follow-up
-work on the toolkit itself, not something this adapter can produce on its own.
