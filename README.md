@@ -162,12 +162,17 @@ graphs (currently pairwise-only); statistical group comparisons.
 
 ## Citation
 
-If you use this software, please cite it using the metadata in
-[`CITATION.cff`](CITATION.cff) (GitHub renders a "Cite this repository"
-button from this file automatically). At minimum:
+If you use the Hyperscanning Toolkit in your research, please cite the accompanying preprint:
 
-```
-Moshe, Y. H. (2026). Hyperscanning Toolkit (Version 1.0.0) [Computer software].
+Moshe, Y. H., Sharma, M., Dahan, A., & Gvirts, H. (2026).
+*From Channel-Pair Connectivity to Brain Networks: An Open Graph Theoretical
+Pipeline for fNIRS Hyperscanning*. bioRxiv.
+https://doi.org/10.64898/2026.08.25.746918
+
+If you would also like to cite the software directly, please use the metadata
+provided in [`CITATION.cff`](CITATION.cff):
+
+Moshe, Y. H. (2026). *Hyperscanning Toolkit* (Version 1.0.0) [Computer software].
 https://github.com/yaelhm/hyperscanning-toolkit
 ```
 
