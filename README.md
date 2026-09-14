@@ -174,7 +174,6 @@ provided in [`CITATION.cff`](CITATION.cff):
 
 Moshe, Y. H. (2026). *Hyperscanning Toolkit* (Version 1.0.0) [Computer software].
 https://github.com/yaelhm/hyperscanning-toolkit
-```
 
 ## Development and attribution
 
