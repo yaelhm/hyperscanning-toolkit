@@ -12,6 +12,12 @@ See [`examples/3hyper_mother_infant/`](examples/3hyper_mother_infant/) for a
 full worked example (a mother-infant fNIRS hyperscanning dataset) including
 the adapter script and config that reproduce it.
 
+## Pipeline Overview
+
+The toolkit provides an end-to-end workflow from fNIRS hyperscanning data organization and quality inspection to epoch extraction, inter- and intra-brain graph construction, network metrics, adjacency matrices, and visualizations.
+
+![Hyperscanning Toolkit pipeline](pipeline_overview.png)
+
 ## Install
 
 ```bash
